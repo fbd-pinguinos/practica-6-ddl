@@ -172,7 +172,7 @@ CREATE TABLE producto(
 	unidades INT NOT NULL CHECK(unidades >= 0),
 	precio INT NOT NULL CHECK(precio >= 0),
 	nombreProducto VARCHAR(30) CHECK(nombreProducto <> ''),
-	descuento INT CHECK(descuento >= 0)
+	descuento INT CHECK(descuento between 0 and 100)
 );
 COMMENT ON TABLE producto IS 'Productos con los que cuenta la tienda';
 COMMENT ON COLUMN producto.idProducto IS 'Identificador del producto';
@@ -207,10 +207,6 @@ ALTER TABLE telefonoProveedor ADD CONSTRAINT telefonoProveedor_pkey PRIMARY KEY(
 ALTER TABLE telefonoProveedor ADD CONSTRAINT telefonoProveedor_fkey FOREIGN KEY(rfc) REFERENCES proveedor(rfc)
 ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE pedido ADD CONSTRAINT pedido_pkey PRIMARY KEY(curp, numeroPedido);
-ALTER TABLE pedido ADD CONSTRAINT pedido_fkey FOREIGN KEY(curp) REFERENCES persona(curp)
-ON UPDATE CASCADE ON DELETE CASCADE;
-
 ALTER TABLE tarjetaCredito ADD CONSTRAINT tarjetaCredito_pkey PRIMARY KEY(curp, referenciaPago);
 ALTER TABLE tarjetaCredito ADD CONSTRAINT tarjetaCredito_fkey FOREIGN KEY(curp) REFERENCES persona(curp)
 ON UPDATE CASCADE ON DELETE CASCADE;
@@ -223,22 +219,16 @@ ALTER TABLE contraentrega ADD CONSTRAINT contraentrega_pkey PRIMARY KEY(curp, re
 ALTER TABLE contraentrega ADD CONSTRAINT contraentrega_fkey FOREIGN KEY(curp) REFERENCES persona(curp)
 ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE envioNormal ADD CONSTRAINT envioNormal_pkey PRIMARY KEY(curp, numeroPedido, numeroEnvio);
+ALTER TABLE envioNormal ADD CONSTRAINT envioNormal_pkey PRIMARY KEY(numeroPedido, numeroEnvio);
 ALTER TABLE envioNormal ADD CONSTRAINT envioNormal_fkey FOREIGN KEY(curp) REFERENCES persona(curp)
 ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE envioNormal ADD CONSTRAINT envioNormal2_fkey FOREIGN KEY(numeroPedido) REFERENCES pedido(numeroPedido)
 ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE envioExpress ADD CONSTRAINT envioExpress_pkey PRIMARY KEY(curp, numeroPedido, numeroEnvio);
+ALTER TABLE envioExpress ADD CONSTRAINT envioExpress_pkey PRIMARY KEY(numeroPedido, numeroEnvio);
 ALTER TABLE envioExpress ADD CONSTRAINT envioExpress_fkey FOREIGN KEY(curp) REFERENCES persona(curp)
 ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE envioExpress ADD CONSTRAINT envioExpress2_fkey FOREIGN KEY(numeroPedido) REFERENCES pedido(numeroPedido)
-ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE producto ADD CONSTRAINT producto_pkey PRIMARY KEY(idProducto, nombre, rfc);
-ALTER TABLE producto ADD CONSTRAINT producto_fkey FOREIGN KEY(rfc) REFERENCES proveedor(rfc)
-ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE producto ADD CONSTRAINT producto2_fkey FOREIGN KEY(nombre) REFERENCES categoria(nombre)
 ON UPDATE CASCADE ON DELETE CASCADE;
 
 /*
@@ -247,4 +237,14 @@ LLaves Foraneas
 ALTER TABLE comprar ADD CONSTRAINT comprar_fkey FOREIGN KEY(idProducto) REFERENCES producto(idProducto)
 ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE comprar ADD CONSTRAINT comprar2_fkey FOREIGN KEY(curp) REFERENCES persona(curp)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE pedido ADD CONSTRAINT pedido_pkey PRIMARY KEY(numeroPedido);
+ALTER TABLE pedido ADD CONSTRAINT pedido_fkey FOREIGN KEY(curp) REFERENCES persona(curp)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE producto ADD CONSTRAINT producto_pkey PRIMARY KEY(idProducto);
+ALTER TABLE producto ADD CONSTRAINT producto_fkey FOREIGN KEY(rfc) REFERENCES proveedor(rfc)
+ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE producto ADD CONSTRAINT producto2_fkey FOREIGN KEY(nombre) REFERENCES categoria(nombre)
 ON UPDATE CASCADE ON DELETE CASCADE;
