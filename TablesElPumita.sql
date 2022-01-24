@@ -6,7 +6,7 @@ CREATE SCHEMA public;
 CREATE TABLE trabajadorCompania(
 	licencia CHAR(8) NOT NULL CHECK(CHAR_LENGTH(licencia) = 8) UNIQUE,
 	correo VARCHAR(100) NOT NULL CHECK(correo <> ''),
-	celular BIGINT NOT NULL,
+	celular CHAR (10) NOT NULL CHECK(CHAR_LENGTH(celular) = 10),
 	nombre VARCHAR(100) NOT NULL CHECK(nombre <> ''),
 	apPaterno VARCHAR(100) NOT NULL CHECK(apPaterno <> ''),
 	apMaterno VARCHAR(100) NOT NULL CHECK(apMaterno <> ''),
@@ -60,8 +60,8 @@ COMMENT ON COLUMN dirTrabajadorCompania.cp IS 'Código postal de los trabajadore
 CREATE TABLE cliente(
 	correo VARCHAR(100) NOT NULL CHECK(correo <> '') UNIQUE,
 	institucion VARCHAR(100) NOT NULL CHECK(institucion <> ''),
-	telCasa BIGINT NOT NULL,
-	celular BIGINT NOT NULL,
+	telCasa CHAR (10) NOT NULL CHECK(CHAR_LENGTH(telCasa) = 10),
+	celular CHAR (10) NOT NULL CHECK(CHAR_LENGTH(celular) = 10),
 	nombre VARCHAR(100) NOT NULL CHECK(nombre <> ''),
 	apPaterno VARCHAR(100) NOT NULL CHECK(apPaterno <> ''),
 	apMaterno VARCHAR(100) NOT NULL CHECK(apMaterno <> ''),
@@ -119,10 +119,10 @@ COMMENT ON COLUMN aseguradora.nombre IS 'Nombre de la aseguradora';
 CREATE TABLE vehiculo(
 	nEconomico INT NOT NULL CHECK(nEconomico > 0) UNIQUE,
 	licencia CHAR(8) NOT NULL CHECK(CHAR_LENGTH(licencia) = 8),
-	nombre VARCHAR(100) NOT NULL CHECK(nombre <> ''),
+	nombre VARCHAR(100) CHECK(nombre <> ''),
 	cilindros INT NOT NULL CHECK(cilindros BETWEEN 4 AND 12),
 	modelo VARCHAR(100) NOT NULL CHECK(modelo <> ''),
-	anio INT NOT NULL CHECK(anio > 1980),
+	anio CHAR(4) NOT NULL CHECK(CHAR_LENGTH(anio) = 4),
 	energia VARCHAR(100) NOT NULL CHECK(energia <> ''),
 	transmision VARCHAR(100) NOT NULL CHECK(transmision <> ''),
 	llantaRef BOOLEAN NOT NULL,
@@ -148,8 +148,8 @@ COMMENT ON COLUMN vehiculo.vigencia IS 'Vigencia del auto';
 
 CREATE TABLE capacidadCoche(
 	modelo VARCHAR(100) NOT NULL CHECK(modelo <> ''),
-	anio INT NOT NULL CHECK(anio > 1980),
-	puertas INT NOT NULL CHECK(puertas BETWEEN 2 AND 6),
+	anio CHAR(4) NOT NULL CHECK(CHAR_LENGTH(anio) = 4),
+	puertas CHAR(1) NOT NULL,
 	pasajeros INT NOT NULL CHECK(pasajeros BETWEEN 2 AND 8)
 );
 COMMENT ON TABLE capacidadCoche IS 'Descipción física de los autos de la asocación';
@@ -254,6 +254,10 @@ COMMENT ON TABLE solicitar IS 'Tabla que relaciona los viajes que han hechos los
 COMMENT ON COLUMN solicitar.correo IS 'Correo del cliente';
 COMMENT ON COLUMN solicitar.numViaje IS 'Número de viaje asociado.';
 COMMENT ON COLUMN solicitar.costo IS 'Costo del viaje para el cliente';
+
+-- Patrón de correos
+ALTER TABLE trabajadorCompania ADD CONSTRAINT proper_email CHECK (correo ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$');
+ALTER TABLE cliente ADD CONSTRAINT proper_email CHECK (correo ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$');
 
 --TrabajadorCompania y dirTrabajadorCompania
 ALTER TABLE trabajadorCompania ADD CONSTRAINT trabajadorCompania_pkey PRIMARY KEY(licencia); 
