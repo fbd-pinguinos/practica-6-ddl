@@ -172,9 +172,9 @@ CREATE TABLE viaje(
 	nEconomico INT NOT NULL CHECK(nEconomico > 0),
 	fecha DATE NOT NULL CHECK(fecha >= '2022-01-01'),
 	nPersonas INT NOT NULL CHECK(nPersonas BETWEEN 1 AND 8),
-	tiempo VARCHAR(30) NOT NULL CHECK(tiempo <> ''),
-	distancia VARCHAR(30) NOT NULL CHECK(distancia <> ''),
-	monto INT NOT NULL CHECK(monto >= 5)
+	tiempo INT NOT NULL CHECK(tiempo > 0),
+	distancia REAL NOT NULL CHECK(distancia > 0),
+	monto REAL NOT NULL CHECK(monto >= 5)
 );
 COMMENT ON TABLE viaje IS 'Tabla que contiene la información de los viajes relacionadas con los taxis';
 COMMENT ON COLUMN viaje.numViaje IS 'Número del viaje';
@@ -248,7 +248,7 @@ COMMENT ON COLUMN manejar.nEconomico IS 'Número económico del auto';
 CREATE TABLE solicitar(
 	correo VARCHAR(100) NOT NULL CHECK(correo <> ''),
 	numViaje INT NOT NULL CHECK(numViaje > 0),
-	costo INT NOT NULL CHECK(costo >= 5)
+	costo REAL NOT NULL CHECK(costo >= 5)
 );
 COMMENT ON TABLE solicitar IS 'Tabla que relaciona los viajes que han hechos los clientes';
 COMMENT ON COLUMN solicitar.correo IS 'Correo del cliente';
