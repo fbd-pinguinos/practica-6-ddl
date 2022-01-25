@@ -275,7 +275,7 @@ ALTER TABLE vehiculo ADD CONSTRAINT vehiculo_pkey PRIMARY KEY(nEconomico);
 ALTER TABLE vehiculo ADD CONSTRAINT vehiculo_fkey FOREIGN KEY(licencia) REFERENCES trabajadorCompania
 ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE vehiculo ADD CONSTRAINT vehiculo_fkey2 FOREIGN KEY(nombre) REFERENCES aseguradora
-ON UPDATE CASCADE ON DELETE CASCADE;
+ON UPDATE CASCADE ON DELETE SET NULL;
 
 --capacidadCoche y marca
 ALTER TABLE capacidadCoche ADD CONSTRAINT capacidadCoche_pkey PRIMARY KEY(modelo, anio);
@@ -284,20 +284,30 @@ ALTER TABLE marca ADD CONSTRAINT marca_pkey PRIMARY KEY(modelo);
 --Viaje
 ALTER TABLE viaje ADD CONSTRAINT viaje_pkey PRIMARY KEY(numViaje);
 ALTER TABLE viaje ADD CONSTRAINT viaje_fkey FOREIGN KEY(licencia) REFERENCES trabajadorCompania
-ON UPDATE CASCADE ON DELETE CASCADE;
+ON UPDATE CASCADE ON DELETE SET NULL;
+	-- no queremos que se borre un viaje solo por borrar al chofer
 ALTER TABLE viaje ADD CONSTRAINT viaje_fkey2 FOREIGN KEY(nEconomico) REFERENCES vehiculo
-ON UPDATE CASCADE ON DELETE CASCADE;
+ON UPDATE CASCADE ON DELETE RESTRICT;
+	-- no vamos a permitir el borrado de vehiculos que participaron en viajes, mas bien se contaran como no funcionales
 
 --Origen 
 ALTER TABLE origen ADD CONSTRAINT origen_pkey PRIMARY KEY(numViaje, lugarOrigen, horaOrigen);
+ALTER TABLE origen ADD CONSTRAINT origen_fkey FOREIGN KEY(numViaje) REFERENCES viaje
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 --Destino
 ALTER TABLE destino ADD CONSTRAINT destino_pkey PRIMARY KEY(numViaje, lugarDestino, horaDestino);
+ALTER TABLE destino ADD CONSTRAINT destino_fkey FOREIGN KEY(numViaje) REFERENCES viaje
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 --Infraccion
 ALTER TABLE infraccion ADD CONSTRAINT infraccion_pkey PRIMARY KEY(nEconomico, numInfraccion);
 ALTER TABLE infraccion ADD CONSTRAINT infraccion_fkey FOREIGN KEY(licencia) REFERENCES trabajadorCompania
-ON UPDATE CASCADE ON DELETE CASCADE;
+ON UPDATE CASCADE ON DELETE SET NULL;
+	-- aún cuando el chofer que obtuvo la infracción ya no forme parte de la empresa, queremos seguir guardando la info de nuestras infracciones
+ALTER TABLE infraccion ADD CONSTRAINT infraccion_fkey2 FOREIGN KEY(nEconomico) REFERENCES vehiculo
+ON UPDATE CASCADE ON DELETE RESTRICT;
+	-- no se pueden borrar vehiculos
 
 --delegacion
 ALTER TABLE delegacion ADD CONSTRAINT delegacion_pkey PRIMARY KEY(cp);
