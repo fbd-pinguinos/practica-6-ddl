@@ -6,13 +6,17 @@ RETURNS NUMERIC
 AS $$
 DECLARE
  	n numeric := 0;
-	fila viaje%rowtype;
+	fila trabajadorCompania%rowtype;
 BEGIN 
-	FOR fila IN SELECT COUNT(esChofer) FROM trabajadorCompania WHERE esChofer = true;
-		LOOP
-			n := n + 1;
-		END LOOP
+	FOR fila IN SELECT esChofer FROM trabajadorCompania
+		loop
+			if fila.esChofer then
+				n := n + 1;
+			end if;
+		END loop;
 		RETURN n;
 END;
 $$
 LANGUAGE plpgsql;
+
+select numChoferes();
