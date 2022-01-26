@@ -20,7 +20,7 @@ CREATE TABLE trabajadorCompania(
 	numero INT NOT NULL,
 	rfc CHAR(12) NOT NULL CHECK(CHAR_LENGTH(rfc) = 12),
 	esDuenio BOOLEAN NOT NULL,
-	esChofer BOOLEAN NOT NULL		
+	esChofer BOOLEAN NOT NULL
 );
 COMMENT ON TABLE trabajadorCompania IS 'Tabla que contiene los taxistas y dueños de vehiculos';
 COMMENT ON COLUMN trabajadorCompania.licencia IS 'Número de licencia de los trabajadores';
@@ -289,9 +289,9 @@ ALTER TABLE vehiculo ADD CONSTRAINT vehiculo_fkey2 FOREIGN KEY(nombre) REFERENCE
 ON UPDATE CASCADE ON DELETE SET NULL;
 
 ALTER TABLE vehiculo ADD CONSTRAINT vehiculo_fkey3 FOREIGN KEY(modelo, anio) REFERENCES capacidadCoche
-ON UPDATE CASCADE ON DELETE SET NULL;
+ON UPDATE CASCADE ON DELETE RESTRICT;
 ALTER TABLE vehiculo ADD CONSTRAINT vehiculo_fkey4 FOREIGN KEY(modelo) REFERENCES marca
-ON UPDATE CASCADE ON DELETE SET NULL;
+ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --Viaje
