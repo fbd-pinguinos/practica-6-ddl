@@ -1,5 +1,23 @@
 -- Funciones
 
+--Funcion que devuelve el número de trabajadores de la compañia.
+CREATE OR REPLACE FUNCTION numCompania()
+RETURNS NUMERIC
+AS $$
+DECLARE
+ 	n numeric := 0;
+	fila trabajadorCompania%rowtype;
+BEGIN 
+	n = count(licencia) from trabajadorCompania;
+	RETURN n;
+END;
+$$
+LANGUAGE plpgsql;
+
+-- Probamos la función numCompania.
+select numCompania();
+
+
 --Funcion que devuelve el número de trabajadores de la compañia que son choferes.
 CREATE OR REPLACE FUNCTION numChoferes()
 RETURNS NUMERIC
